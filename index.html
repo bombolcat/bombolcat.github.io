@@ -2,44 +2,207 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>lms</title>
+  <title>VIT Chennai - Learning Management System</title>
+  <link rel = "icon" href =  
+"https://lms.vit.ac.in/theme/image.php/boost/theme/1700131206/favicon" 
+        type = "image/x-icon"> 
+  <script src="server.js" ></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
   <div class="container">
-    <h1>help lelo</h1>
+    <h1>Help Lelo</h1>
 
     <div class="question">
-      <h2>Question 1: What is the value of pi?</h2>
+      <h2>Dining philosopher</h2>
       <p>
-        Here's the code to display the value of pi:
+        with semaphore <button onclick="copyCode('code1')">Copy Code</button>
       </p>
       <div class="code-box">
-        <pre><code>
-          const pi = 3.14159;
-          console.log("The value of pi is: " + pi);
-        </code></pre>
+        
+        <pre><code id="code1">
+#include &lt;iostream&gt;
+#include &lt;thread&gt;
+#include &lt;mutex>
+#include &lt;semaphore.h>
+
+using namespace std;
+
+sem_t forks[5];
+
+void philosopher(int i) {
+    while (true) {
+        int left_fork = i;
+        int right_fork = (i + 1) % 5;
+
+        sem_wait(&forks[left_fork]);
+        sem_wait(&forks[right_fork]);
+
+        cout << "Philosopher " << i << " is eating" << endl;
+        this_thread::sleep_for(chrono::seconds(15)); // Eating duration
+        sem_post(&forks[left_fork]);
+        sem_post(&forks[right_fork]);
+
+        cout << "Philosopher " << i << " is thinking" << endl;
+        this_thread::sleep_for(chrono::seconds(1)); // Thinking duration
+        return;
+    }
+}
+
+int main() {
+    for (int i = 0; i < 5; ++i) {
+        sem_init(&forks[i], 0, 1);
+    }
+
+    thread t1(philosopher, 0);
+    thread t2(philosopher, 1);
+    thread t3(philosopher, 2);
+    thread t4(philosopher, 3);
+    thread t5(philosopher, 4);
+
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+    t5.join();
+
+    return 0;
+
+}
+            </code></pre>
+           
       </div>
     </div>
 
     <div class="question">
-      <h2>Question 2: How to reverse a string in JavaScript?</h2>
+      <h2>Round robin</h2>
       <p>
-        Check out this code to reverse a string:
+        short version
+        <button onclick="copyCode('code2')">Copy Code</button>
       </p>
       <div class="code-box">
-        <pre><code>
-          function reverseString(str) {
-            return str.split("").reverse().join("");
-          }
+        
+        <pre><code id="code2">
+          //roundrobin
+#include &lt;iostream&gt;
+#include &lt;queue&gt;
 
-          const originalString = "Hello, world!";
-          const reversedString = reverseString(originalString);
-          console.log("Reversed string: " + reversedString);
+using namespace std;
+
+struct Process {
+    int id;
+    int burstTime;
+};
+
+
+void roundRobinScheduling(Process processes[], int n, int timeQuantum) {
+    queue&lt;Process&gt; readyQueue;
+    int time = 0;
+
+    for (int i = 0; i < n; i++) {
+        readyQueue.push(processes[i]);
+    }
+
+    while (!readyQueue.empty()) {
+        Process currentProcess = readyQueue.front();
+        readyQueue.pop();
+
+        if (currentProcess.burstTime > timeQuantum) {
+            currentProcess.burstTime -= timeQuantum;
+            time += timeQuantum;
+            readyQueue.push(currentProcess);
+        } else {
+            time += currentProcess.burstTime;
+            cout << "Process " << currentProcess.id << " finished at " << time << endl;
+        }
+    }
+}
+
+int main() {
+    int n, timeQuantum;
+
+    cout << "Enter the number of processes: ";
+    cin >> n;
+
+    Process processes[n];
+
+    for (int i = 0; i < n; i++) {
+        processes[i].id = i + 1;
+        cout << "Enter burst time for process " << i + 1 << ": ";
+        cin >> processes[i].burstTime;
+    }
+
+    cout << "Enter time quantum: ";
+    cin >> timeQuantum;
+
+    cout << "\nRound Robin Scheduling:\n";
+    roundRobinScheduling(processes, n, timeQuantum);
+
+  return 0;
+}
         </code></pre>
       </div>
     </div>
+    <div class="question">
+      <h2>Dining philosopher mutex</h2>
+      <p>
+        with Mutex <button onclick="copyCode('code3')">Copy Code</button>
+      </p>
+      <div class="code-box">
+        
+        <pre><code id="code3">
+          //dining philosophers problem using sempahores
 
+#include &lt;iostream>
+#include &lt;thread>
+#include &lt;mutex>
+
+using namespace std;
+
+mutex m;
+int chopsticks[5] = {1,1,1,1,1};
+
+void philosopher(int i){
+    while(true){
+        m.lock();
+        if(chopsticks[i] == 1 && chopsticks[(i+1)%5] == 1){
+            chopsticks[i] = 0;
+            chopsticks[(i+1)%5] = 0;
+            cout << "Philosopher " << i << " is eating" << endl;
+            m.unlock();
+            this_thread::sleep_for(chrono::seconds(1));
+            chopsticks[i] = 1;
+            chopsticks[(i+1)%5] = 1;
+            cout << "Philosopher " << i << " is thinking" << endl;
+            this_thread::sleep_for(chrono::seconds(1));
+            return;
+        }
+        else{
+            m.unlock();
+            this_thread::sleep_for(chrono::seconds(1));
+        }
+    }
+}  
+
+int main(){
+    thread t1(philosopher, 0);
+    thread t2(philosopher, 1);
+    thread t3(philosopher, 2);
+    thread t4(philosopher, 3);
+    thread t5(philosopher, 4);
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+    t5.join();
+    return 0;
+}
+//g++ philosophers.cpp -lpthread -o philosophers
+            </code></pre>
+           
+      </div>
+    </div>
     <!-- Add more questions and code snippets as needed -->
 
   </div>
