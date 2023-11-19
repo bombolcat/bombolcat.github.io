@@ -14,7 +14,7 @@
   <div class="container">
     <h1>Help Lelo</h1>
 
-    <div class="question">
+    <div class="question"><!-- question 1-->
       <h2>Dining philosopher</h2>
       <p>
         with semaphore <button onclick="copyCode('code1')">Copy Code</button>
@@ -75,7 +75,7 @@ int main() {
       </div>
     </div>
 
-    <div class="question">
+    <div class="question"> <!-- question 2-->
       <h2>Round robin</h2>
       <p>
         short version
@@ -144,7 +144,8 @@ int main() {
         </code></pre>
       </div>
     </div>
-    <div class="question">
+
+    <div class="question"> <!-- question 3-->
       <h2>Dining philosopher mutex</h2>
       <p>
         with Mutex <button onclick="copyCode('code3')">Copy Code</button>
@@ -199,6 +200,320 @@ int main(){
     return 0;
 }
 //g++ philosophers.cpp -lpthread -o philosophers
+            </code></pre>
+           
+      </div>
+    </div>
+
+    <div class="question"> <!-- question 4-->
+      <h2>Banker's algo</h2>
+      <p>
+        manual input <button onclick="copyCode('code4')">Copy Code</button>
+      </p>
+      <div class="code-box">
+        
+        <pre><code id="code4">
+          
+
+          //implement the banker's algorithm for resource allocation
+
+#include &lt;iostream>
+#include &lt;vector>
+
+using namespace std;
+
+const int NUM_PROCESSES = 5; // Number of processes
+const int NUM_RESOURCES = 3; // Number of resources
+
+// Function to check if the requested resources can be allocated
+bool isSafe(int available[], int max_need[][NUM_RESOURCES], int allocation[][NUM_RESOURCES], int process) {
+    int need[NUM_RESOURCES];
+    for (int i = 0; i < NUM_RESOURCES; ++i) {
+        need[i] = max_need[process][i] - allocation[process][i];
+        if (need[i] > available[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Banker's algorithm for resource allocation
+void bankerAlgorithm(int available[], int max_need[][NUM_RESOURCES], int allocation[][NUM_RESOURCES]) {
+    bool finish[NUM_PROCESSES] = {false};
+
+    int work[NUM_RESOURCES];
+    for (int i = 0; i < NUM_RESOURCES; ++i) {
+        work[i] = available[i];
+    }
+
+    int safeSequence[NUM_PROCESSES];
+    int count = 0;
+
+    while (count < NUM_PROCESSES) {
+        bool found = false;
+
+        for (int i = 0; i < NUM_PROCESSES; ++i) {
+            if (!finish[i] && isSafe(work, max_need, allocation, i)) {
+                for (int j = 0; j < NUM_RESOURCES; ++j) {
+                    work[j] += allocation[i][j];
+                }
+                safeSequence[count++] = i;
+                finish[i] = true;
+                found = true;
+            }
+        }
+
+        if (!found) {
+            cout << "System is not in safe state" << endl;
+            return;
+        }
+    }
+
+    cout << "System is in safe state. Safe sequence is: ";
+    for (int i = 0; i < NUM_PROCESSES; ++i) {
+        cout << safeSequence[i] << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    int available[NUM_RESOURCES] = {3, 3, 2}; // Available resources
+
+    int max_need[NUM_PROCESSES][NUM_RESOURCES] = {
+        {7, 5, 3},
+        {3, 2, 2},
+        {9, 0, 2},
+        {2, 2, 2},
+        {4, 3, 3}
+    };
+
+    int allocation[NUM_PROCESSES][NUM_RESOURCES] = {
+        {0, 1, 0},
+        {2, 0, 0},
+        {3, 0, 2},
+        {2, 1, 1},
+        {0, 0, 2}
+    };
+
+    bankerAlgorithm(available, max_need, allocation);
+
+    return 0;
+}
+          
+            </code></pre>
+           
+      </div>
+    </div>
+
+    <div class="question"> <!-- question 5-->
+      <h2>Reader Writer problem c code </h2>
+      <p>
+        manual input <button onclick="copyCode('code5')">Copy Code</button>
+      </p>
+      <div class="code-box">
+        
+        <pre><code id="code5">
+          
+
+#include &lt;stdio.h>
+#include &lt;pthread.h>
+#include &lt;semaphore.h>
+
+#define N 5 // Number of readers
+#define M 5 // Number of writers
+
+sem_t db;      // controls access to db
+sem_t mutex;   // controls access to rc
+int rc = 0;    // number of processes reading or wanting to
+
+void* reader(void* arg) {
+    sem_wait(&mutex);
+    rc++;
+    if(rc == 1) sem_wait(&db);
+    sem_post(&mutex);
+    printf("Reader is reading...\n");
+    sleep(1);
+    sem_wait(&mutex);
+    rc--;
+    if(rc == 0) sem_post(&db);
+    sem_post(&mutex);
+    return NULL;
+}
+
+void* writer(void* arg) {
+    sem_wait(&db);
+    printf("Writer is writing...\n");
+    sleep(1);
+    sem_post(&db);
+    return NULL;
+}
+
+int main() {
+    pthread_t readers[N], writers[M];
+    sem_init(&mutex, 0, 1);
+    sem_init(&db, 0, 1);
+
+    for(int i = 0; i < N; i++) {
+        pthread_create(&readers[i], NULL, reader, NULL);
+    }
+
+    for(int i = 0; i < M; i++) {
+        pthread_create(&writers[i], NULL, writer, NULL);
+    }
+
+    for(int i = 0; i < N; i++) {
+        pthread_join(readers[i], NULL);
+    }
+
+    for(int i = 0; i < M; i++) {
+        pthread_join(writers[i], NULL);
+    }
+
+    sem_destroy(&mutex);
+    sem_destroy(&db);
+  return 0;
+}
+
+            </code></pre>
+           
+      </div>
+    </div>
+
+    <div class="question"> <!-- question 6-->
+      <h2>semaphore</h2>
+      <p>
+        increment decrement c code <button onclick="copyCode('code6')">Copy Code</button>
+      </p>
+      <div class="code-box">
+        
+        <pre><code id="code6">
+          
+
+#include &lt;stdio.h>
+#include &lt;pthread.h>
+#include &lt;semaphore.h>
+
+#define NUM_THREADS 2
+
+int X = 0; // Shared variable
+
+// Semaphores for synchronization
+sem_t incrementSem;
+sem_t decrementSem;
+
+void *incrementThread(void *arg) {
+    for (int i = 0; i < 5; ++i) {
+        sem_wait(&decrementSem); // Wait for the decrement signal
+        X++; // Increment the shared variable
+        printf("Increment Thread: X = %d\n", X);
+        sem_post(&incrementSem); // Signal that increment is done
+    }
+
+    pthread_exit(NULL);
+}
+
+void *decrementThread(void *arg) {
+    for (int i = 0; i < 5; ++i) {
+        sem_wait(&incrementSem); // Wait for the increment signal
+        X--; // Decrement the shared variable
+        printf("Decrement Thread: X = %d\n", X);
+        sem_post(&decrementSem); // Signal that decrement is done
+    }
+
+    pthread_exit(NULL);
+}
+
+int main() {
+    pthread_t threads[NUM_THREADS];
+
+    // Initialize semaphores
+    sem_init(&incrementSem, 0, 1); // Initialize to 1 to allow the first increment
+    sem_init(&decrementSem, 0, 0); // Initialize to 0, decrement waits for increment
+
+    // Create threads
+    pthread_create(&threads[0], NULL, incrementThread, NULL);
+    pthread_create(&threads[1], NULL, decrementThread, NULL);
+
+    // Wait for threads to finish
+    for (int i = 0; i < NUM_THREADS; ++i) {
+        pthread_join(threads[i], NULL);
+    }
+
+    // Clean up semaphores
+    sem_destroy(&incrementSem);
+    sem_destroy(&decrementSem);
+
+    return 0;
+}
+          
+            </code></pre>
+           
+      </div>
+    </div>
+
+    <div class="question"> <!-- question 7-->
+      <h2>Mutex</h2>
+      <p>
+        locking mutex c code<button onclick="copyCode('code7')">Copy Code</button>
+      </p>
+      <div class="code-box">
+        
+        <pre><code id="code7">
+          
+
+          //implement the banker's algorithm for resource allocation
+
+#include &lt;stdio.h>
+#include &lt;pthread.h>
+
+#define N 10
+
+pthread_mutex_t lock;
+int count = 1;
+
+void *print_odd(void *arg) {
+    while (1) {
+        pthread_mutex_lock(&lock);
+        if (count > N) {
+            pthread_mutex_unlock(&lock);
+            break;
+        }
+        if (count % 2 != 0) {
+            printf("%d ", count);
+            count++;
+        }
+        pthread_mutex_unlock(&lock);
+    }
+    return NULL;
+}
+
+void *print_even(void *arg) {
+    while (1) {
+        pthread_mutex_lock(&lock);
+        if (count > N) {
+            pthread_mutex_unlock(&lock);
+            break;
+        }
+        if (count % 2 == 0) {
+            printf("%d ", count);
+            count++;
+        }
+        pthread_mutex_unlock(&lock);
+    }
+    return NULL;
+}
+
+int main() {
+    pthread_t thread1, thread2;
+    pthread_mutex_init(&lock, NULL);
+    pthread_create(&thread1, NULL, print_odd, NULL);
+    pthread_create(&thread2, NULL, print_even, NULL);
+    pthread_join(thread1, NULL);
+    pthread_join(thread2, NULL);
+    pthread_mutex_destroy(&lock);
+    return 0;
+}
+          
             </code></pre>
            
       </div>
