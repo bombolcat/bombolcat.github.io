@@ -40,6 +40,10 @@ body {
     border-radius: 8px;
     border: 1px solid #ccc;
     margin-top: 10px;
+    /* Set a fixed height for the box */
+    height: 200px; /* Adjust the height as needed */
+    /* Enable vertical scrolling */
+    overflow-y: auto;
   }
   
   pre {
