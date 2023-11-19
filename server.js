@@ -4,7 +4,7 @@ function copyCode(elementId) {
   
     navigator.clipboard.writeText(codeText)
       .then(() => {
-        alert('Code copied to clipboard!');
+        console.log('Code copied successfully!');
       })
       .catch(err => {
         console.error('Unable to copy: ', err);
