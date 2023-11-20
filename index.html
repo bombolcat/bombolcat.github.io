@@ -828,7 +828,7 @@ int main()
       </div>
     </div>
 
-    <div class="question"> <!-- question 10-->
+    <div class="question"> <!-- question 11-->
       <h2>Fit algorithms</h2>
       <p>
         page c++ code <button onclick="copyCode('code11')">Copy Code</button>
@@ -956,6 +956,103 @@ int main()
            
       </div>
     </div>
+
+    <div class="question"> <!-- question 12-->
+      <h2>Mpmc algo</h2>
+      <p>
+        lcd display  <button onclick="copyCode('code12')">Copy Code</button>
+      </p>
+      <div class="code-box">
+        
+        <pre><code id="code12">    
+          acall delay
+          mov a,#0c0h
+          acall command
+          acall delay
+          //display the letter
+          mov a,#'V'
+          acall display
+          acall delay
+          mov a,#'I'
+          acall display
+          acall delay
+          mov a,#'T'
+          acall display
+          acall delay
+          mov a,#'C'
+          acall display
+          acall delay
+          mov a,#'C'
+          acall display
+          again : sjmp again
+          command: 
+              mov 	p2,a
+              clr 	p3.7
+              clr 	p3.6
+              setb 	p3.5
+              acall delay
+              clr 	p3.5
+              ret
+          
+          display :	mov p2,a
+              setb 	p3.7
+              clr 	p3.6
+              setb 	p3.5
+              acall delay
+              clr 	p3.5
+              ret
+          delay:	mov r3,#50
+          here2: 	mov r4,#255
+          here :	djnz r4,here
+              djnz r3,here2
+              ret
+              end
+            
+          
+            </code></pre>
+           
+      </div>
+    </div>
+
+    <div class="question"> <!-- question 13-->
+      <h2>Mpmc algo</h2>
+      <p>
+        bcd to hex   <button onclick="copyCode('code13')">Copy Code</button>
+      </p>
+      <div class="code-box">
+        
+        <pre><code id="code13">    
+          MOV AL, [2000]	AL<-[2000]
+404	MOV AH, AL	AH<-AL
+406	AND AL, 0F	AL <- (AL AND 0F)
+408	MOV CL, 04	CL <- 04
+40A	SHR AH, CL	Shift AH content Right by 4 bits(value of CL)
+40C	OR AX, 3030	AX <- (AX OR 3030)
+40F	MOV [3000], AX	[3000]<-AX
+413	HLT	Stop Execution
+
+
+
+0400	MOV SI, 500	SI <- 500
+0403	MOV DI, 600	DI <- 600
+0406	MOV BL, [SI]	BL <- [SI]
+0408	AND BL, 0F	BL = BL AND 0F
+040A	MOV AL, [SI]	AL <- [SI]
+040C	AND AL, F0	BL = AL AND F0
+040E	MOV CL, 04	CL = 04
+0410	ROR AL, CL	Rotate AL
+0412	MOV DL, 0A	DL = 0A
+0414	MUL DL	AX = AL * DL
+0416	ADD AL, BL	AL = AL + BL
+0418	MOV [DI], AL	[DI] <- AL
+041A	HLT	
+            
+          
+            </code></pre>
+           
+      </div>
+    </div>
+
     <!-- Add more questions and code snippets as needed -->
 
   </div>
