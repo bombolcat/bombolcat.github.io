@@ -1,5 +1,5 @@
 .nav-bar{
-        
+    background-color: aliceblue;
     overflow: hidden;
 }
 
@@ -31,3 +31,8 @@ li a{
     padding: 16px;
     text-decoration: none;
   }
+
+.header{
+    color:darkolivegreen;
+    text-align: center;
+}
